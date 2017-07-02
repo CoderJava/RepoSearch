@@ -44,7 +44,7 @@ private boolean isWifiConnected() {
 }
 ```
 Call those method in `onCreate()` method in MainActivity.
-**More detail in :** [AndroidManifest.xml](https://github.com/satyakresna/RepoSearch/blob/master/app/src/main/AndroidManifest.xml) and [MainActivity](https://github.com/satyakresna/RepoSearch/blob/master/app/src/main/java/com/example/satyakresna/reposearch/MainActivity.java)
+**More detail in :** [AndroidManifest.xml](https://github.com/satyakresna/RepoSearch/blob/Volley/app/src/main/AndroidManifest.xml) and [MainActivity](https://github.com/satyakresna/RepoSearch/blob/Volley/app/src/main/java/com/example/satyakresna/reposearch/MainActivity.java)
 
 ## Courtesy
 This sample source from [Ray Wenderlich](https://raywenderlich.com/126770/android-networking-tutorial-getting-started) in 2016. But, because of today is 2017, there's something deprecated in that source. So, I have initiative to modified it.
