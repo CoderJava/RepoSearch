@@ -11,6 +11,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();
 
-                startDownload();
+                makeRequestWithVolley("https://api.github.com/repositories");
             } else {
                 new AlertDialog.Builder(this)
                         .setTitle("No Internet Connection")
@@ -95,5 +103,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startDownload() {
+    }
+
+    public void downloadComplete(ArrayList<Repository> repositories) {
+        showListFragment(repositories);
+        if (mProgressDialog != null) {
+            mProgressDialog.hide();
+        }
+    }
+
+    /**
+     * makeRequestWithVolley(@param url) does the following:
+     * 1. Creates a new request queue.
+     * 2. Creates a new instance of StringRequest with the URL you want to connect to.
+     * 3. Converts and passes the results to downloadComplete().
+     * 4. Adds the string request to the request queue.
+     *
+     */
+    private void makeRequestWithVolley(String url) {
+
+        RequestQueue queue = Volley.newRequestQueue(this); // 1
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new com.android.volley.Response.Listener<String>() { // 2
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            downloadComplete(Util.retrieveRepositoriesFromResponse(response)); // 3
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+        queue.add(stringRequest);  // 4
+
     }
 }
