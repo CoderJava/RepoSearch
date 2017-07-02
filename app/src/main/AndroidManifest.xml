@@ -3,6 +3,7 @@
     package="com.example.satyakresna.reposearch">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--If you want to check network connection, set this permission-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application

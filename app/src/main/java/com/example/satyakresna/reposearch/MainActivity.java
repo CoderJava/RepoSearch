@@ -67,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * isNetworkConnected() checks that the device has an active Internet Connection as follows:
+     * 1. Retrieves an instance of the ConnectivityManager class from the current application text
+     * 2. Retrieves an instance of the NetworkInfo class that represents the current network connection.
+     *    This will be null if no network is available.
+     * 3. Check if there is an available network connection and the device is connected.
+     */
     private boolean isNetworkConnected() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE); // 1
@@ -74,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
         return networkInfo != null && networkInfo.isConnected(); // 3
     }
 
+    /**
+     * When you have an app that retrieves huge amounts of data, you might want to restrict network
+     * connections to particular network types, such as WI-FI. You can do this using getType() on
+     * the NetworkInfo object
+     *
+     */
     private boolean isWifiConnected() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
