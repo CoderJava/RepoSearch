@@ -10,8 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();
 
-                startDownload();
+                makeRetrofitCalls();
             } else {
                 new AlertDialog.Builder(this)
                         .setTitle("No Internet Connection")
@@ -95,5 +100,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startDownload() {
+    }
+
+    public void downloadComplete(ArrayList<Repository> repositories) {
+        showListFragment(repositories);
+        if (mProgressDialog != null) {
+            mProgressDialog.hide();
+        }
+    }
+
+    /**
+     * The code does following:
+     * 1. Specifies base URL.
+     * 2. Specifies GsonConverterFactory as the converter which uses Gson for its deserialization.
+     * 3. Generates an implementation of the RetrofitAPI.
+     * 4. Generates the request call.
+     * 5. Queues the request call.
+     * 6. Passes the results to the downloadComplete()
+     */
+    private void makeRetrofitCalls() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com") // 1
+                .addConverterFactory(GsonConverterFactory.create()) // 2
+                .build();
+
+        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class); // 3
+        retrofit2.Call<ArrayList<Repository>> call = retrofitAPI.retrieveRepositories(); // 4
+
+        call.enqueue(new Callback<ArrayList<Repository>>() { // 5
+            @Override
+            public void onResponse(retrofit2.Call<ArrayList<Repository>> call, retrofit2.Response<ArrayList<Repository>> response) {
+                downloadComplete(response.body()); // 6
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ArrayList<Repository>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
