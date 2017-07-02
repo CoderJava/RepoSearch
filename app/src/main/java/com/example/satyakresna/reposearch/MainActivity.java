@@ -11,7 +11,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.setCancelable(false);
                 mProgressDialog.show();
 
-                startDownload();
+                makeRequestWithOkHttp("https://api.github.com/repositories");
             } else {
                 new AlertDialog.Builder(this)
                         .setTitle("No Internet Connection")
@@ -95,5 +100,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startDownload() {
+    }
+
+    public void downloadComplete(ArrayList<Repository> repositories) {
+        showListFragment(repositories);
+        if (mProgressDialog != null) {
+            mProgressDialog.hide();
+        }
+    }
+
+    private void makeRequestWithOkHttp(String url) {
+        OkHttpClient client = new OkHttpClient();   // 1
+        okhttp3.Request request = new okhttp3.Request.Builder().url(url).build();  // 2
+
+        client.newCall(request).enqueue(new okhttp3.Callback() { // 3
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response)
+                    throws IOException {
+                final String result = response.body().string();  // 4
+
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            downloadComplete(Util.retrieveRepositoriesFromResponse(result));  // 5
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
     }
 }
