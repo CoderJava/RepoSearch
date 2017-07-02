@@ -43,6 +43,7 @@ private boolean isWifiConnected() {
     return networkInfo != null && (ConnectivityManager.TYPE_WIFI == networkInfo.getType()) && networkInfo.isConnected();
 }
 ```
+Call those method in `onCreate()` method in MainActivity.
 **More detail in :** [AndroidManifest.xml](https://github.com/satyakresna/RepoSearch/blob/master/app/src/main/AndroidManifest.xml) and [MainActivity](https://github.com/satyakresna/RepoSearch/blob/master/app/src/main/java/com/example/satyakresna/reposearch/MainActivity.java)
 
 ## Courtesy
